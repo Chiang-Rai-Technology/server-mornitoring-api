@@ -102,10 +102,4 @@ dist
 
 # TernJS port file
 .tern-port
-
-!configs/
-!controllers/
-!helpers/
-!models/
-!public/
-!routes/
+.gitkeep
