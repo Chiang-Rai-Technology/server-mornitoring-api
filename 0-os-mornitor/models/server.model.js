@@ -5,7 +5,7 @@ module.exports.logging = data => {
         let dbs = await MongoDB.connect();
         await dbs
             .db('gpp_uat')
-            .collection('server_mornitoring')
+            .collection('mornitor_server')
             .updateOne({
                 ip: data.ip
             }, {
