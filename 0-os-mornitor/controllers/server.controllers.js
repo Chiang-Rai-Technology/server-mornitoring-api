@@ -20,6 +20,49 @@ module.exports = () => {
                 const cpu = osu.cpu;
                 const memory = await osu.mem.info();
                 const disk = await osu.drive.info();
+                let api_list = await exec('pm2 list');
+                api_list = ((api_list.stdout).split('\n')).slice(3);
+                let apis = []
+                let total_memory = Number((memory.totalMemMb / GB).toFixed(0, 1));
+                for await (const api of api_list) {
+                    let e = api.split('│').filter(e => e)
+                    if (e.length === 1) {
+                        break;
+                    } else {
+                        let uptime = (e[6]).trim();
+                        let uptime_last_str = (uptime.substring(uptime.length - 1)).trim();
+                        let uptime_amount = Number(uptime.substring(0, uptime.length - 1)) * 1000;
+                        if (uptime_last_str === 's') uptime = uptime_amount;
+                        if (uptime_last_str === 'm') uptime = uptime_amount * 60;
+                        if (uptime_last_str === 'h') uptime = uptime_amount * (60 * 60);
+                        if (uptime_last_str === 'D') uptime = uptime_amount * (60 * 60 * 24);
+                        if (uptime_last_str === 'M') uptime = uptime_amount * (60 * 60 * 24 * 30);
+                        if (uptime_last_str === 'Y') uptime = uptime_amount * (60 * 60 * 24 * 30 * 12);
+                        let memory = (e[10].trim())
+                        let memory_2_str = (memory.substring(memory.length - 2)).trim();
+                        if (memory_2_str === 'mb') {
+                            memory = Number(memory.replace('mb', ''))
+                        } else {
+                            let memory_last_str = (memory.substring(memory.length - 1)).trim();
+                            if (memory_last_str === 'b') {
+                                memory = Number(memory.replace('b', '')) * 1024;
+                            } else {
+                                memory = null;
+                            }
+                        }
+                        let memory_p = Number(((memory * 100) / (total_memory * 1024)).toFixed(2));
+                        apis.push({
+                            // id: (api_list[0]).trim(),
+                            name: (e[1]).trim(),
+                            uptime: uptime,
+                            restart: Number((e[7]).trim()),
+                            status: ((e[8]).trim()).toLowerCase(),
+                            cpu_p: Number(((e[9]).trim()).replace('%', '')),
+                            memory: memory,
+                            memory_p: memory_p
+                        })
+                    }
+                }
                 const data = {
                     ip: server_ip,
                     name: server_name,
@@ -43,7 +86,8 @@ module.exports = () => {
                         free: Number(disk.freeGb),
                         used_p: Number(disk.usedPercentage),
                         free_p: Number(disk.freePercentage)
-                    }
+                    },
+                    api: apis
                 }
                 await model.logging(data);
                 /*----------------------------------------------------------------

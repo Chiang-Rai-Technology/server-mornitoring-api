@@ -20,6 +20,7 @@ module.exports.logging = data => {
                     cpu: data.cpu,
                     memory: data.memory,
                     disk: data.disk,
+                    api: data.api,
                     upd_date: new Date(),
                     upd_by: 'API OS MORNITORING',
                     upd_prog: '0-os-mornitor'
