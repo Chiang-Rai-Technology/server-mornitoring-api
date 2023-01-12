@@ -1,8 +1,8 @@
 {
-  "name": "00-os-mornitor",
+  "name": "0-os-mornitor",
   "version": "1.0.0",
   "description": "",
-  "main": "00-os-mornitor.js",
+  "main": "0-os-mornitor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

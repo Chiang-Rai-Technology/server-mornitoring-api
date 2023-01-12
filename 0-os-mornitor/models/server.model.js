@@ -14,7 +14,7 @@ module.exports.logging = data => {
                     description: null,
                     cr_date: new Date(),
                     cr_by: 'API OS MORNITORING',
-                    cr_prog: '00-os-mornitor',
+                    cr_prog: '0-os-mornitor',
                 },
                 $set: {
                     cpu: data.cpu,
@@ -22,7 +22,7 @@ module.exports.logging = data => {
                     disk: data.disk,
                     upd_date: new Date(),
                     upd_by: 'API OS MORNITORING',
-                    upd_prog: '00-os-mornitor'
+                    upd_prog: '0-os-mornitor'
                 }
             }, {
                 upsert: true
