@@ -20,6 +20,8 @@ module.exports = () => {
                 const cpu = osu.cpu;
                 const memory = await osu.mem.info();
                 const disk = await osu.drive.info();
+                const netstat = await osu.netstat.inOut();
+                const net_io = netstat.total;
                 let api_list = await exec('pm2 list');
                 api_list = ((api_list.stdout).split('\n')).slice(3);
                 let apis = []
@@ -86,6 +88,10 @@ module.exports = () => {
                         free: Number(disk.freeGb),
                         used_p: Number(disk.usedPercentage),
                         free_p: Number(disk.freePercentage)
+                    },
+                    network: {
+                        input: Number(net_io.inputMb),
+                        output: Number(net_io.outputMb)
                     },
                     api: apis
                 }
