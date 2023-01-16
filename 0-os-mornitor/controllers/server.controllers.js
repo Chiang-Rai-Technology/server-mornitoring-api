@@ -34,7 +34,7 @@ module.exports = () => {
                         let uptime = (e[6]).trim();
                         let uptime_last_str = (uptime.substring(uptime.length - 1)).trim();
                         let uptime_amount = Number(uptime.substring(0, uptime.length - 1)) * 1000;
-                        if (uptime_last_str === 's') uptime = uptime_amount;
+                        if (uptime_last_str === 's') uptime = Number(uptime_amount);
                         if (uptime_last_str === 'm') uptime = uptime_amount * 60;
                         if (uptime_last_str === 'h') uptime = uptime_amount * (60 * 60);
                         if (uptime_last_str === 'D') uptime = uptime_amount * (60 * 60 * 24);
@@ -56,7 +56,8 @@ module.exports = () => {
                         apis.push({
                             // id: (api_list[0]).trim(),
                             name: (e[1]).trim(),
-                            uptime: uptime,
+                            mode: (e[4]).trim(),
+                            uptime: Number(uptime),
                             restart: Number((e[7]).trim()),
                             status: ((e[8]).trim()).toLowerCase(),
                             cpu_p: Number(((e[9]).trim()).replace('%', '')),
