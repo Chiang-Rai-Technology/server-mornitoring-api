@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { CONNECTION, DB } = require('../configs/db.constant');
+const { CONNECTION } = require('../configs/db.constant');
 
 module.exports.connect = () => {
     return new Promise(async (resolve, reject) => {

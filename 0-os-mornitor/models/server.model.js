@@ -1,10 +1,11 @@
 const MongoDB = require('../helpers/mongodb');
+const { DB } = require('../configs/db.constant');
 
 module.exports.logging = data => {
     return new Promise(async (resolve, reject) => {
         let dbs = await MongoDB.connect();
         await dbs
-            .db('gpp_uat')
+            .db(DB)
             .collection('mornitor_server')
             .updateOne({
                 ip: data.ip
