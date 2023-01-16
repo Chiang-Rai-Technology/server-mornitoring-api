@@ -57,7 +57,7 @@ module.exports = () => {
                         if (isNaN(Number(restart_times))) {
                             let api_detail = null;
                             try {
-                                api_detail = await exec('pm2 show ' + '258');
+                                api_detail = await exec('pm2 show ' + (api_list[0]).trim());
                                 api_detail = api_detail.stdout;
                             } catch (error) {
                                 api_detail = error.stdout;
