@@ -53,12 +53,22 @@ module.exports = () => {
                             }
                         }
                         let memory_p = Number(((memory * 100) / (total_memory * 1024)).toFixed(2));
+                        let restart_times = (e[7]).trim();
+                        if (isNaN(Number(restart_times))) {
+                            let api_detail = null;
+                            try {
+                                api_detail = await exec('pm2 show ' + '258');
+                            } catch (error) {
+                                api_detail = error.stdout;
+                            }
+                            restart_times = ((((api_detail).split('\n'))[6]).split('│')).map(e => e.trim()).filter(e => e)[1];
+                        }
                         apis.push({
                             // id: (api_list[0]).trim(),
                             name: (e[1]).trim(),
                             mode: (e[4]).trim(),
                             uptime: Number(uptime),
-                            restart: Number((e[7]).trim()),
+                            restart: Number(restart_times),
                             status: ((e[8]).trim()).toLowerCase(),
                             cpu_p: Number(((e[9]).trim()).replace('%', '')),
                             memory: memory,
