@@ -57,7 +57,7 @@ module.exports = () => {
                         if (isNaN(Number(restart_times))) {
                             let api_detail = null;
                             try {
-                                api_detail = await exec('pm2 show ' + (api_list[0]).trim());
+                                api_detail = await exec('pm2 show ' + (e[0]).trim());
                                 api_detail = api_detail.stdout;
                             } catch (error) {
                                 api_detail = error.stdout;
@@ -65,7 +65,7 @@ module.exports = () => {
                             restart_times = ((((api_detail).split('\n'))[6]).split('│')).map(e => e.trim()).filter(e => e)[1];
                         }
                         apis.push({
-                            // id: (api_list[0]).trim(),
+                            // id: (e[0]).trim(),
                             name: (e[1]).trim(),
                             mode: (e[4]).trim(),
                             uptime: Number(uptime),
