@@ -1,6 +1,5 @@
 const { MongoClient } = require('mongodb');
-const CONNECTION = 'mongodb://admin:gwtP%40ssw0rd@167.172.65.50:27017,167.172.65.75:27017,167.172.65.80:27017/?replicaSet=rs0&authSource=admin';
-const DB = 'gpp_uat';
+const { CONNECTION, DB } = require('../configs/db.constant');
 
 module.exports.connect = () => {
     return new Promise(async (resolve, reject) => {

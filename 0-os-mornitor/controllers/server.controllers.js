@@ -58,6 +58,7 @@ module.exports = () => {
                             let api_detail = null;
                             try {
                                 api_detail = await exec('pm2 show ' + '258');
+                                api_detail = api_detail.stdout;
                             } catch (error) {
                                 api_detail = error.stdout;
                             }
