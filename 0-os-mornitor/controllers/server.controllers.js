@@ -22,11 +22,12 @@ module.exports = () => {
                 const disk = await osu.drive.info();
                 const netstat = await osu.netstat.inOut();
                 const net_io = netstat.total;
-                let api_list = await exec('pm2 list');
+                let api_list = null;
+                api_list = await exec('pm2 list');
                 api_list = ((api_list.stdout).split('\n')).slice(3);
                 let apis = []
                 let total_memory = Number((memory.totalMemMb / GB).toFixed(0, 1));
-                for await (const api of api_list) {
+                for await (let api of api_list) {
                     let e = api.split('│').filter(e => e)
                     if (e.length === 1) {
                         break;
@@ -55,14 +56,15 @@ module.exports = () => {
                         let memory_p = Number(((memory * 100) / (total_memory * 1024)).toFixed(2));
                         let restart_times = (e[7]).trim();
                         if (isNaN(Number(restart_times))) {
-                            let api_detail = null;
-                            try {
-                                api_detail = await exec('pm2 show ' + (e[0]).trim());
-                                api_detail = api_detail.stdout;
-                            } catch (error) {
-                                api_detail = error.stdout;
-                            }
-                            restart_times = ((((api_detail).split('\n'))[6]).split('│')).map(e => e.trim()).filter(e => e)[1];
+                            restart_times = '9999';
+                            // let api_detail = null;
+                            // try {
+                            //     api_detail = await exec('pm2 show ' + (e[0]).trim());
+                            //     api_detail = api_detail.stdout;
+                            // } catch (error) {
+                            //     api_detail = error.stdout;
+                            // }
+                            // restart_times = ((((api_detail).split('\n'))[6]).split('│')).map(e => e.trim()).filter(e => e)[1];
                         }
                         apis.push({
                             // id: (e[0]).trim(),
@@ -107,9 +109,11 @@ module.exports = () => {
                     },
                     api: apis
                 }
+                apis = [];
                 await model.logging(data);
-                /*----------------------------------------------------------------
+                /*----------------------------------------------------------------*/
                 console.log('**********************************************************************');
+                console.log('Datetime: ', new Date().toISOString());
                 console.log('SERVER: ', server_name);
                 console.log('IP: ', server_ip);
                 console.log(`CPU: ${data.cpu.model} (${data.cpu.cores} Cores)`);
@@ -130,7 +134,7 @@ module.exports = () => {
                 console.log(`Used Percentage: ${data.disk.used_p}%`);
                 console.log(`Free Percentage: ${data.disk.free_p}%`);
                 console.log('**********************************************************************');
-                ----------------------------------------------------------------*/
+                /*----------------------------------------------------------------*/
                 resolve(null);
             } catch (error) {
                 job.stop();
