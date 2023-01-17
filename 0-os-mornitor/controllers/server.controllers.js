@@ -13,9 +13,10 @@ module.exports = () => {
                 let server_name = await exec('hostname');
                 if (server_name.stderr) throw server_name.stderr;
                 server_name = (server_name.stdout).trim().replace('\n', '');
-                let server_ip = await exec('hostname -I');
+                let server_ip = await exec('dig TXT +short o-o.myaddr.l.google.com @ns1.google.com');
                 if (server_ip.stderr) server_ip = '0.0.0.0';
                 server_ip = ((server_ip.stdout).trim()).split(' ')[0];
+                server_ip = server_ip.replace(/"/ig, '')
                 const GB = 1024;
                 const cpu = osu.cpu;
                 const memory = await osu.mem.info();
@@ -32,16 +33,7 @@ module.exports = () => {
                     if (e.length === 1) {
                         break;
                     } else {
-                        let uptime = (e[6]).trim();
-                        let uptime_last_str = (uptime.substring(uptime.length - 1)).trim();
-                        let uptime_amount = Number(uptime.substring(0, uptime.length - 1)) * 1000;
-                        if (uptime_last_str === 's') uptime = Number(uptime_amount);
-                        if (uptime_last_str === 'm') uptime = uptime_amount * 60;
-                        if (uptime_last_str === 'h') uptime = uptime_amount * (60 * 60);
-                        if (uptime_last_str === 'D') uptime = uptime_amount * (60 * 60 * 24);
-                        if (uptime_last_str === 'M') uptime = uptime_amount * (60 * 60 * 24 * 30);
-                        if (uptime_last_str === 'Y') uptime = uptime_amount * (60 * 60 * 24 * 30 * 12);
-                        let memory = (e[10].trim())
+                        let memory = (e[10].trim());
                         let memory_2_str = (memory.substring(memory.length - 2)).trim();
                         if (memory_2_str === 'mb') {
                             memory = Number(memory.replace('mb', ''))
@@ -57,20 +49,12 @@ module.exports = () => {
                         let restart_times = (e[7]).trim();
                         if (isNaN(Number(restart_times))) {
                             restart_times = '9999';
-                            // let api_detail = null;
-                            // try {
-                            //     api_detail = await exec('pm2 show ' + (e[0]).trim());
-                            //     api_detail = api_detail.stdout;
-                            // } catch (error) {
-                            //     api_detail = error.stdout;
-                            // }
-                            // restart_times = ((((api_detail).split('\n'))[6]).split('│')).map(e => e.trim()).filter(e => e)[1];
                         }
                         apis.push({
                             // id: (e[0]).trim(),
                             name: (e[1]).trim(),
                             mode: (e[4]).trim(),
-                            uptime: Number(uptime),
+                            uptime: (e[6]).trim(),
                             restart: Number(restart_times),
                             status: ((e[8]).trim()).toLowerCase(),
                             cpu_p: Number(((e[9]).trim()).replace('%', '')),
@@ -111,7 +95,7 @@ module.exports = () => {
                 }
                 apis = [];
                 await model.logging(data);
-                /*----------------------------------------------------------------*/
+                /*----------------------------------------------------------------
                 console.log('**********************************************************************');
                 console.log('Datetime: ', new Date().toISOString());
                 console.log('SERVER: ', server_name);
@@ -134,7 +118,7 @@ module.exports = () => {
                 console.log(`Used Percentage: ${data.disk.used_p}%`);
                 console.log(`Free Percentage: ${data.disk.free_p}%`);
                 console.log('**********************************************************************');
-                /*----------------------------------------------------------------*/
+                ----------------------------------------------------------------*/
                 resolve(null);
             } catch (error) {
                 job.stop();
