@@ -1,9 +1,10 @@
 const { MongoClient } = require('mongodb');
-const { CONNECTION } = require('../configs/db.constant');
+const { CONNECTION, DB } = require('../configs/db.constant');
 
-module.exports.connect = () => {
+module.exports = () => {
     return new Promise(async (resolve, reject) => {
         MongoClient.connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
+            .then(dbs => (module.exports.MongoDB = dbs.db(DB), dbs))
             .then(dbs => resolve(dbs))
             .catch(error => reject(error))
     })

@@ -1,11 +1,8 @@
-const MongoDB = require('../helpers/mongodb');
-const { DB } = require('../configs/db.constant');
+const { MongoDB } = require('../helpers/mongodb');
 
 module.exports.logging = data => {
     return new Promise(async (resolve, reject) => {
-        let dbs = await MongoDB.connect();
-        await dbs
-            .db(DB)
+        await MongoDB
             .collection('mornitor_server')
             .updateOne({
                 ip: data.ip
@@ -32,6 +29,6 @@ module.exports.logging = data => {
             })
             .then(result => resolve(result))
             .catch(error => reject(error))
-            .finally(async () => await MongoDB.close(dbs));
+        // .finally(async () => await MongoDB.close(dbs));
     });
 }
